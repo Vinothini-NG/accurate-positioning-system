@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Indoor Navigation System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    #zoneDisplay {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 20px;
+      color: #0066cc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Indoor Navigation System</h1>
+  
+
+  <div id="zoneDisplay">Detecting your location...</div>
+
+  <iframe href="https://www.mappedin.com/" title="Mappedin Map" name="Mappedin Map" allow="clipboard-write 'self' https://app.mappedin.com; web-share 'self' https://app.mappedin.com" scrolling="no" width="100%" height="650" frameborder="0" style="border:0" src="https://app.mappedin.com/map/68184de004e97f000b1e1308?embedded=true"></iframe>
+  <script>
+    // Fetch predicted zone from server
+    fetch('/predict')
+      .then(res => res.json())
+      .then(data => {
+        if (data.predicted_zone) {
+          document.getElementById('zoneDisplay').innerText = `📍 You are currently in: ${data.predicted_zone}`;
+        } else {
+          document.getElementById('zoneDisplay').innerText = `⚠️ Could not detect current zone.`;
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching prediction:", err);
+        document.getElementById('zoneDisplay').innerText = `🚫 Error connecting to server.`;
+      });
+  </script>
+</body>
+</html>
